@@ -11,7 +11,6 @@
 .layout{display:grid;grid-template-columns:1.2fr .8fr;gap:20px}.panel{background:linear-gradient(145deg,#191329,#100d19);border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:0 12px 45px #0005}
 .now{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:2px}.song{font-size:28px;font-weight:800;margin:10px 0 6px;overflow-wrap:anywhere}.sub{color:var(--muted);margin-bottom:20px}
 #soundcloud{width:100%;height:166px;border:0;border-radius:12px;background:#0e0b15}
-.controls{display:flex;justify-content:center;align-items:center;gap:14px;margin-top:18px}.controls button{border:0;border-radius:50%;width:48px;height:48px;background:#2a1d3d;color:white;font-size:19px;cursor:pointer}.controls .play{width:60px;height:60px;background:linear-gradient(135deg,var(--purple),var(--pink));font-size:23px}
 .status{color:var(--muted);text-align:center;margin-top:15px;min-height:18px;font-size:13px}
 .head{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}.head h2{margin:0;font-size:18px}.count{color:var(--muted);font-size:12px}
 #playlist{display:flex;flex-direction:column;gap:8px;max-height:530px;overflow:auto}.track{display:flex;align-items:center;gap:12px;text-align:left;background:#100d19;border:1px solid transparent;color:white;border-radius:12px;padding:13px;cursor:pointer}.track.active{border-color:var(--purple);background:#251538}.num{color:#bda5d7;width:22px}.trackname{font-weight:600;overflow-wrap:anywhere}.empty{color:var(--muted);padding:25px 5px;text-align:center}
@@ -28,11 +27,6 @@
       <div class="song" id="songTitle">Memuat playlist...</div>
       <div class="sub" id="songNumber">Music Player</div>
       <iframe id="soundcloud" allow="autoplay" scrolling="no" frameborder="0"></iframe>
-      <div class="controls">
-        <button id="prev" title="Sebelumnya">⏮</button>
-        <button class="play" id="play" title="Putar">▶</button>
-        <button id="next" title="Berikutnya">⏭</button>
-      </div>
       <div class="status" id="status">Menghubungkan ke playlist...</div>
     </section>
     <section class="panel">
@@ -69,7 +63,7 @@ function playAt(i,byUser=false){
   const t=tracks[index];
   $('songTitle').textContent=t.title||'Tanpa judul';
   $('songNumber').textContent='Lagu '+(index+1)+' dari '+tracks.length;
-  $('play').textContent='▶';render();
+  render();
   const frame=$('soundcloud');
   frame.src=widgetUrl(t.soundcloud_url);
   setStatus('Memuat lagu dari SoundCloud...');
@@ -81,21 +75,14 @@ function playAt(i,byUser=false){
       widget.play();
       setStatus('Mencoba memutar lagu...');
     });
-    widget.bind(window.SC.Widget.Events.PLAY,()=>{playing=true;$('play').textContent='Ⅱ';setStatus('Sedang diputar');});
-    widget.bind(window.SC.Widget.Events.PAUSE,()=>{playing=false;$('play').textContent='▶';setStatus('Dijeda');});
+    widget.bind(window.SC.Widget.Events.PLAY,()=>{playing=true;setStatus('Sedang diputar');});
+    widget.bind(window.SC.Widget.Events.PAUSE,()=>{playing=false;setStatus('Dijeda');});
     widget.bind(window.SC.Widget.Events.FINISH,()=>playAt(index+1,true));
     widget.bind(window.SC.Widget.Events.ERROR,()=>setStatus('Lagu tidak dapat diputar. Coba link SoundCloud lain.'));
   };
 }
-$('play').addEventListener('click',()=>{
-  if(!widget||!ready){if(tracks.length)playAt(index,true);return;}
-  manualStart=true;
-  if(playing)widget.pause();else widget.play();
-});
-$('next').addEventListener('click',()=>playAt(index+1,true));
-$('prev').addEventListener('click',()=>playAt(index-1,true));
 async function init(){
-  const {data,error}=await supabase.from('tracks').select('id,title,soundcloud_url,created_at').not('soundcloud_url','is',null).order('created_at',{ascending:true});
+  const {data,error}=await supabase.from('tracks').select('id,title,soundcloud_url,created_at,sort_order').not('soundcloud_url','is',null).order('sort_order',{ascending:true,nullsFirst:false}).order('created_at',{ascending:true});
   if(error){setStatus('Gagal mengambil playlist: '+error.message);$('playlist').innerHTML='<div class="empty">Tidak bisa memuat playlist.</div>';return;}
   tracks=data||[];render();
   if(!tracks.length){$('songTitle').textContent='Belum ada lagu';setStatus('Tambahkan link SoundCloud lewat Admin.');return;}

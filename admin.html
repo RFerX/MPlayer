@@ -1,20 +1,77 @@
-<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Music Player Admin</title><style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');*{box-sizing:border-box}body{margin:0;background:#09090f;color:#f4f4f8;font-family:Inter,Arial,sans-serif}.wrap{max-width:850px;margin:auto;padding:30px 18px}.panel{background:#13131c;border:1px solid #ffffff12;border-radius:20px;padding:24px;margin-bottom:20px}.logo{font-size:21px;font-weight:800;letter-spacing:2px;margin-bottom:24px}.logo span{color:#a855f7}.label{color:#a855f7;font-size:11px;font-weight:700;letter-spacing:2px;margin-bottom:18px}input,button{font:inherit}input[type=email],input[type=password],input[type=text]{display:block;width:100%;background:#1b1b27;border:1px solid #ffffff16;border-radius:10px;color:white;padding:12px;margin:10px 0;outline:none}input[type=file]{width:100%;margin:12px 0;color:#bbb}button{border:0;border-radius:10px;background:#7c3aed;color:white;font-weight:700;padding:12px 16px;cursor:pointer}button:hover{background:#9333ea}button.danger{background:#39202b;color:#ffb4c2}button.danger:hover{background:#572332}.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.row>*{flex:1}.msg{font-size:13px;color:#a9a9bc;min-height:20px;margin:12px 0}.track{display:flex;align-items:center;gap:12px;border-bottom:1px solid #ffffff10;padding:12px 0}.trackname{flex:1;overflow-wrap:anywhere;font-size:14px}.small{color:#999;font-size:12px}.hidden{display:none!important}.adminlist{margin-top:15px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px}@media(max-width:500px){.panel{padding:18px}.row{display:block}.row button{width:100%;margin-top:8px}}
-</style></head><body><main class="wrap"><div class="logo">MUSIC <span>PLAYER</span> <span style="color:#888;font-size:12px">ADMIN</span></div>
-<section class="panel" id="loginPanel"><div class="label">ADMIN LOGIN</div><input id="username" type="text" placeholder="Username admin"><input id="password" type="password" placeholder="Password"><button id="login">Login</button><div id="loginMsg" class="msg"></div></section>
-<section class="panel hidden" id="adminPanel"><div class="top"><div class="label">UPLOAD MUSIC</div><button id="logout" style="background:#292938">Logout</button></div><input id="title" type="text" placeholder="Judul lagu"><input id="file" type="file" accept="audio/*"><button id="upload">Upload Lagu</button><div id="uploadMsg" class="msg"></div><hr style="border:0;border-top:1px solid #ffffff12;margin:25px 0"><div class="top"><div class="label">DAFTAR LAGU</div><span id="count" class="small"></span></div><div id="list" class="adminlist"></div></section>
-<div class="msg" id="status"></div></main>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin - Music Player</title>
+<style>
+:root{color-scheme:dark;--bg:#090711;--panel:#171126;--line:#35234b;--purple:#a855f7;--pink:#ec4899;--muted:#b4a5c5}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;padding:25px;background:radial-gradient(circle at 15% 5%,#291044 0,transparent 35%),var(--bg);color:#fff;font:15px Arial,sans-serif}
+.wrap{max-width:760px;margin:35px auto}.panel{background:linear-gradient(145deg,#1b1430,#100d19);border:1px solid var(--line);border-radius:20px;padding:25px;box-shadow:0 15px 45px #0005}.brand{font-size:24px;font-weight:800;margin-bottom:7px}.brand span{color:var(--purple)}p{color:var(--muted);margin-top:0}label{display:block;margin:17px 0 7px;color:#dfd1ee}input{width:100%;padding:14px;border:1px solid var(--line);border-radius:11px;background:#0d0a15;color:white;font-size:15px;outline:none}input:focus{border-color:var(--purple)}button{border:0;border-radius:11px;padding:13px 18px;background:linear-gradient(135deg,var(--purple),var(--pink));color:white;font-weight:700;cursor:pointer;margin-top:15px}button.secondary{background:#2a1d3d;border:1px solid var(--line)}button.danger{background:#51203d;padding:9px 12px;margin:0}.hidden{display:none!important}.msg{min-height:20px;color:#d7b7ff;margin-top:12px;font-size:13px}.top{display:flex;justify-content:space-between;align-items:center}.top a{color:#d9b8ff;text-decoration:none}.list{margin-top:25px}.item{display:flex;justify-content:space-between;gap:15px;align-items:center;padding:13px 0;border-bottom:1px solid var(--line)}.item strong{display:block;overflow-wrap:anywhere}.item small{display:block;color:var(--muted);margin-top:5px;overflow-wrap:anywhere}.item button{flex-shrink:0}.hint{font-size:12px;color:var(--muted);line-height:1.6}
+</style>
+</head>
+<body>
+<div class="wrap">
+ <section class="panel">
+  <div class="top"><div><div class="brand">♫ MUSIC <span>PLAYER</span> ADMIN</div><p>Kelola playlist menggunakan link SoundCloud.</p></div><a href="index.html">← Player</a></div>
+  <div id="loginBox">
+   <label>Username</label><input id="username" autocomplete="username" placeholder="admin">
+   <label>Password</label><input id="password" type="password" autocomplete="current-password" placeholder="Password">
+   <button id="login">Login Admin</button>
+  </div>
+  <div id="adminBox" class="hidden">
+   <label>Judul Lagu</label><input id="title" placeholder="Contoh: Lagu Favorit">
+   <label>Link SoundCloud</label><input id="url" type="url" placeholder="https://soundcloud.com/artist/track">
+   <div class="hint">Tempel link lagu SoundCloud yang publik dan mengizinkan pemutaran melalui embed.</div>
+   <button id="add">Simpan ke Playlist</button>
+   <button id="logout" class="secondary">Logout</button>
+   <div class="list"><h3>Daftar Lagu</h3><div id="tracks"></div></div>
+  </div>
+  <div class="msg" id="msg"></div>
+ </section>
+</div>
 <script type="module">
-import{createClient}from'https://esm.sh/@supabase/supabase-js@2';
-import{SUPABASE_URL,SUPABASE_KEY}from'./config.js';
+import {createClient} from 'https://esm.sh/@supabase/supabase-js@2';
+import {SUPABASE_URL,SUPABASE_KEY} from './config.js';
 const supabase=createClient(SUPABASE_URL,SUPABASE_KEY);
-const $=id=>document.getElementById(id);let user=null;const bucket='music';
-async function sessionCheck(){const{data}=await supabase.auth.getSession();user=data.session?.user||null;show();if(user)refresh()}
-function show(){$('loginPanel').classList.toggle('hidden',!!user);$('adminPanel').classList.toggle('hidden',!user)}
-$('login').onclick=async()=>{$('loginMsg').textContent='Memproses login...';const username=$('username').value.trim();const email=username.toLowerCase()==='admin'?'admin@night.radio':username;const{data,error}=await supabase.auth.signInWithPassword({email,password:$('password').value});if(error){$('loginMsg').textContent=error.message;return}user=data.user;show();refresh()};
-$('logout').onclick=async()=>{await supabase.auth.signOut();user=null;show()};
-$('upload').onclick=async()=>{const file=$('file').files[0],title=$('title').value.trim();if(!file||!title){$('uploadMsg').textContent='Isi judul dan pilih file audio.';return}if(file.size>50*1024*1024){$('uploadMsg').textContent='File maksimal 50 MB.';return}const ext=(file.name.split('.').pop()||'mp3').replace(/[^a-zA-Z0-9]/g,'');const path=`${Date.now()}-${crypto.randomUUID()}.${ext}`;$('uploadMsg').textContent='Mengupload...';$('upload').disabled=true;try{const{error:upErr}=await supabase.storage.from(bucket).upload(path,file,{contentType:file.type||'audio/mpeg',upsert:false});if(upErr)throw upErr;const{error:dbErr}=await supabase.from('tracks').insert({title,file_path:path});if(dbErr){await supabase.storage.from(bucket).remove([path]);throw dbErr}$('uploadMsg').textContent='Upload berhasil!';$('title').value='';$('file').value='';await refresh()}catch(e){console.error(e);$('uploadMsg').textContent='Gagal: '+e.message}finally{$('upload').disabled=false}};
-async function refresh(){const{data,error}=await supabase.from('tracks').select('id,title,file_path,created_at').order('created_at',{ascending:true});if(error){$('status').textContent=error.message;return}const tracks=data||[];$('count').textContent=`${tracks.length} lagu`;$('list').replaceChildren();if(!tracks.length){$('list').textContent='Belum ada lagu.';return}tracks.forEach((t,i)=>{const row=document.createElement('div');row.className='track';const nm=document.createElement('div');nm.className='trackname';nm.textContent=`${String(i+1).padStart(2,'0')} — ${t.title}`;const del=document.createElement('button');del.className='danger';del.textContent='Hapus';del.onclick=()=>removeTrack(t);row.append(nm,del);$('list').append(row)})}
-async function removeTrack(t){if(!confirm(`Hapus lagu "${t.title}"?`))return;$('status').textContent='Menghapus...';const{error:storageErr}=await supabase.storage.from(bucket).remove([t.file_path]);if(storageErr){$('status').textContent='Gagal hapus file: '+storageErr.message;return}const{error:dbErr}=await supabase.from('tracks').delete().eq('id',t.id);if(dbErr){$('status').textContent='File dihapus, tetapi record gagal: '+dbErr.message;return}$('status').textContent='Lagu berhasil dihapus.';refresh()}
-supabase.auth.onAuthStateChange((_event,s)=>{user=s?.user||null;show()});sessionCheck();
-</script></body></html>
+const $=id=>document.getElementById(id);
+function message(t){$('msg').textContent=t}
+function validSoundCloud(value){
+  try{const u=new URL(value);return (u.hostname==='soundcloud.com'||u.hostname==='www.soundcloud.com'||u.hostname==='m.soundcloud.com')&&u.pathname.split('/').filter(Boolean).length>=2;}catch{return false;}
+}
+async function showTracks(){
+  const {data,error}=await supabase.from('tracks').select('id,title,soundcloud_url,created_at').not('soundcloud_url','is',null).order('created_at',{ascending:true});
+  if(error){message('Gagal memuat lagu: '+error.message);return;}
+  $('tracks').innerHTML='';
+  if(!data.length){$('tracks').textContent='Belum ada lagu.';return;}
+  data.forEach(t=>{
+    const row=document.createElement('div');row.className='item';
+    const info=document.createElement('div');const title=document.createElement('strong');title.textContent=t.title||'Tanpa judul';
+    const link=document.createElement('small');link.textContent=t.soundcloud_url;info.append(title,link);
+    const del=document.createElement('button');del.className='danger';del.textContent='Hapus';
+    del.addEventListener('click',async()=>{if(!confirm('Hapus lagu ini?'))return;const {error}=await supabase.from('tracks').delete().eq('id',t.id);if(error)message('Gagal menghapus: '+error.message);else{message('Lagu dihapus.');showTracks();}});
+    row.append(info,del);$('tracks').append(row);
+  });
+}
+$('login').addEventListener('click',async()=>{
+  const username=$('username').value.trim(),password=$('password').value;
+  if(!username||!password){message('Isi username dan password.');return;}
+  const email=username.toLowerCase()==='admin'?'admin@night.radio':username;
+  const {error}=await supabase.auth.signInWithPassword({email,password});
+  if(error){message('Login gagal: '+error.message);return;}
+  $('loginBox').classList.add('hidden');$('adminBox').classList.remove('hidden');message('Login berhasil.');showTracks();
+});
+$('add').addEventListener('click',async()=>{
+  const title=$('title').value.trim(),url=$('url').value.trim();
+  if(!title||!url){message('Isi judul dan link SoundCloud.');return;}
+  if(!validSoundCloud(url)){message('Link tidak valid. Gunakan link lagu soundcloud.com/artist/nama-lagu.');return;}
+  const {error}=await supabase.from('tracks').insert({title,soundcloud_url:url,file_path:null});
+  if(error){message('Gagal menyimpan: '+error.message);return;}
+  $('title').value='';$('url').value='';message('Lagu berhasil ditambahkan!');showTracks();
+});
+$('logout').addEventListener('click',async()=>{await supabase.auth.signOut();$('adminBox').classList.add('hidden');$('loginBox').classList.remove('hidden');message('Sudah logout.');});
+const {data:{session}}=await supabase.auth.getSession();
+if(session){$('loginBox').classList.add('hidden');$('adminBox').classList.remove('hidden');showTracks();}
+</script>
+</body>
+</html>

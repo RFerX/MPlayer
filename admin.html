@@ -7,13 +7,14 @@
 <style>
 :root{color-scheme:dark;--bg:#090711;--panel:#171126;--line:#35234b;--purple:#a855f7;--pink:#ec4899;--muted:#b4a5c5}
 *{box-sizing:border-box}body{margin:0;min-height:100vh;padding:25px;background:radial-gradient(circle at 15% 5%,#291044 0,transparent 35%),var(--bg);color:#fff;font:15px Arial,sans-serif}
-.wrap{max-width:760px;margin:35px auto}.panel{background:linear-gradient(145deg,#1b1430,#100d19);border:1px solid var(--line);border-radius:20px;padding:25px;box-shadow:0 15px 45px #0005}.brand{font-size:24px;font-weight:800;margin-bottom:7px}.brand span{color:var(--purple)}p{color:var(--muted);margin-top:0}label{display:block;margin:17px 0 7px;color:#dfd1ee}input{width:100%;padding:14px;border:1px solid var(--line);border-radius:11px;background:#0d0a15;color:white;font-size:15px;outline:none}input:focus{border-color:var(--purple)}button{border:0;border-radius:11px;padding:13px 18px;background:linear-gradient(135deg,var(--purple),var(--pink));color:white;font-weight:700;cursor:pointer;margin-top:15px}button.secondary{background:#2a1d3d;border:1px solid var(--line)}button.danger{background:#51203d;padding:9px 12px;margin:0}.hidden{display:none!important}.msg{min-height:20px;color:#d7b7ff;margin-top:12px;font-size:13px}.top{display:flex;justify-content:space-between;align-items:center}.top a{color:#d9b8ff;text-decoration:none}.list{margin-top:25px}.item{display:flex;justify-content:space-between;gap:15px;align-items:center;padding:13px 0;border-bottom:1px solid var(--line)}.item strong{display:block;overflow-wrap:anywhere}.item small{display:block;color:var(--muted);margin-top:5px;overflow-wrap:anywhere}.item button{flex-shrink:0}.hint{font-size:12px;color:var(--muted);line-height:1.6}
+.wrap{max-width:850px;margin:35px auto}.panel{background:linear-gradient(145deg,#1b1430,#100d19);border:1px solid var(--line);border-radius:20px;padding:25px;box-shadow:0 15px 45px #0005}.brand{font-size:24px;font-weight:800;margin-bottom:7px}.brand span{color:var(--purple)}p{color:var(--muted);margin-top:0}label{display:block;margin:17px 0 7px;color:#dfd1ee}input{width:100%;padding:14px;border:1px solid var(--line);border-radius:11px;background:#0d0a15;color:white;font-size:15px;outline:none}input:focus{border-color:var(--purple)}button{border:0;border-radius:11px;padding:13px 18px;background:linear-gradient(135deg,var(--purple),var(--pink));color:white;font-weight:700;cursor:pointer;margin-top:15px}button:disabled{opacity:.45;cursor:not-allowed}button.secondary{background:#2a1d3d;border:1px solid var(--line)}button.danger{background:#51203d;padding:9px 12px;margin:0}button.move{background:#2a1d3d;border:1px solid var(--line);padding:8px 11px;margin:0;font-size:17px}.hidden{display:none!important}.msg{min-height:20px;color:#d7b7ff;margin-top:12px;font-size:13px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px}.top a{color:#d9b8ff;text-decoration:none}.list{margin-top:25px}.item{display:flex;gap:12px;align-items:center;padding:12px;margin:9px 0;background:#100d19;border:1px solid var(--line);border-radius:13px;transition:.15s}.item.dragging{opacity:.4;border-style:dashed}.item.over{border-color:var(--pink);transform:scale(1.01)}.drag{font-size:22px;color:#bda5d7;cursor:grab;user-select:none;padding:5px}.number{color:#bda5d7;min-width:25px}.info{flex:1;min-width:0}.info strong{display:block;overflow-wrap:anywhere}.info small{display:block;color:var(--muted);margin-top:5px;overflow-wrap:anywhere}.actions{display:flex;gap:6px;align-items:center;flex-shrink:0}.actions button{margin:0}.hint{font-size:12px;color:var(--muted);line-height:1.6}.listhead{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.listhead h3{margin:0}.save{margin:0}.empty{color:var(--muted);padding:20px 0}
+@media(max-width:560px){body{padding:12px}.panel{padding:17px}.wrap{margin:15px auto}.brand{font-size:19px}.item{gap:7px;padding:9px}.drag{font-size:18px}.actions{gap:4px}.actions button{padding:8px}.info small{font-size:10px}}
 </style>
 </head>
 <body>
 <div class="wrap">
  <section class="panel">
-  <div class="top"><div><div class="brand">♫ MUSIC <span>PLAYER</span> ADMIN</div><p>Kelola playlist menggunakan link SoundCloud.</p></div><a href="index.html">← Player</a></div>
+  <div class="top"><div><div class="brand">♫ MUSIC <span>PLAYER</span> ADMIN</div><p>Kelola lagu dan atur urutan playlist.</p></div><a href="index.html">← Player</a></div>
   <div id="loginBox">
    <label>Username</label><input id="username" autocomplete="username" placeholder="admin">
    <label>Password</label><input id="password" type="password" autocomplete="current-password" placeholder="Password">
@@ -25,7 +26,11 @@
    <div class="hint">Tempel link lagu SoundCloud yang publik dan mengizinkan pemutaran melalui embed.</div>
    <button id="add">Simpan ke Playlist</button>
    <button id="logout" class="secondary">Logout</button>
-   <div class="list"><h3>Daftar Lagu</h3><div id="tracks"></div></div>
+   <div class="list">
+    <div class="listhead"><h3>Daftar Lagu</h3><button id="saveOrder" class="save" disabled>Simpan Urutan</button></div>
+    <div class="hint" style="margin-top:8px">Tarik lagu menggunakan ikon ⠿ untuk mengubah urutan. Tombol Hapus tetap tersedia di setiap lagu. Di HP, gunakan tombol panah ↑ ↓. Jangan lupa tekan Simpan Urutan setelah mengubah urutan.</div>
+    <div id="tracks"></div>
+   </div>
   </div>
   <div class="msg" id="msg"></div>
  </section>
@@ -35,39 +40,60 @@ import {createClient} from 'https://esm.sh/@supabase/supabase-js@2';
 import {SUPABASE_URL,SUPABASE_KEY} from './config.js';
 const supabase=createClient(SUPABASE_URL,SUPABASE_KEY);
 const $=id=>document.getElementById(id);
+let tracks=[],dragIndex=null,orderChanged=false;
 function message(t){$('msg').textContent=t}
-function validSoundCloud(value){
-  try{const u=new URL(value);return (u.hostname==='soundcloud.com'||u.hostname==='www.soundcloud.com'||u.hostname==='m.soundcloud.com')&&u.pathname.split('/').filter(Boolean).length>=2;}catch{return false;}
+function setDirty(v){orderChanged=v;$('saveOrder').disabled=!v}
+function validSoundCloud(value){try{const u=new URL(value);return (u.hostname==='soundcloud.com'||u.hostname==='www.soundcloud.com'||u.hostname==='m.soundcloud.com')&&u.pathname.split('/').filter(Boolean).length>=2;}catch{return false;}}
+function moveTrack(from,to){if(to<0||to>=tracks.length||from===to)return;const [item]=tracks.splice(from,1);tracks.splice(to,0,item);setDirty(true);renderTracks();}
+function renderTracks(){
+ const root=$('tracks');root.innerHTML='';
+ if(!tracks.length){root.innerHTML='<div class="empty">Belum ada lagu.</div>';return;}
+ tracks.forEach((t,i)=>{
+  const row=document.createElement('div');row.className='item';row.draggable=true;row.dataset.index=i;
+  row.addEventListener('dragstart',e=>{dragIndex=i;row.classList.add('dragging');e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',String(i));});
+  row.addEventListener('dragend',()=>{dragIndex=null;row.classList.remove('dragging');document.querySelectorAll('.item.over').forEach(x=>x.classList.remove('over'));});
+  row.addEventListener('dragover',e=>{e.preventDefault();row.classList.add('over');});
+  row.addEventListener('dragleave',()=>row.classList.remove('over'));
+  row.addEventListener('drop',e=>{e.preventDefault();row.classList.remove('over');const from=dragIndex===null?Number(e.dataTransfer.getData('text/plain')):dragIndex;moveTrack(from,i);});
+  const grip=document.createElement('span');grip.className='drag';grip.textContent='⠿';grip.title='Tarik untuk mengubah urutan';
+  const number=document.createElement('span');number.className='number';number.textContent=String(i+1)+'.';
+  const info=document.createElement('div');info.className='info';const title=document.createElement('strong');title.textContent=t.title||'Tanpa judul';const link=document.createElement('small');link.textContent=t.soundcloud_url;info.append(title,link);
+  const actions=document.createElement('div');actions.className='actions';
+  const up=document.createElement('button');up.className='move';up.textContent='↑';up.title='Naik';up.disabled=i===0;up.addEventListener('click',()=>moveTrack(i,i-1));
+  const down=document.createElement('button');down.className='move';down.textContent='↓';down.title='Turun';down.disabled=i===tracks.length-1;down.addEventListener('click',()=>moveTrack(i,i+1));
+  const del=document.createElement('button');del.className='danger';del.textContent='Hapus';del.addEventListener('click',async()=>{if(!confirm('Hapus lagu ini?'))return;del.disabled=true;const {error}=await supabase.from('tracks').delete().eq('id',t.id);if(error){message('Gagal menghapus: '+error.message);del.disabled=false;}else{tracks.splice(i,1);setDirty(true);renderTracks();message('Lagu dihapus. Tekan Simpan Urutan untuk menyimpan susunan terbaru.');}});
+  actions.append(up,down,del);row.append(grip,number,info,actions);root.append(row);
+ });
 }
 async function showTracks(){
-  const {data,error}=await supabase.from('tracks').select('id,title,soundcloud_url,created_at').not('soundcloud_url','is',null).order('created_at',{ascending:true});
-  if(error){message('Gagal memuat lagu: '+error.message);return;}
-  $('tracks').innerHTML='';
-  if(!data.length){$('tracks').textContent='Belum ada lagu.';return;}
-  data.forEach(t=>{
-    const row=document.createElement('div');row.className='item';
-    const info=document.createElement('div');const title=document.createElement('strong');title.textContent=t.title||'Tanpa judul';
-    const link=document.createElement('small');link.textContent=t.soundcloud_url;info.append(title,link);
-    const del=document.createElement('button');del.className='danger';del.textContent='Hapus';
-    del.addEventListener('click',async()=>{if(!confirm('Hapus lagu ini?'))return;const {error}=await supabase.from('tracks').delete().eq('id',t.id);if(error)message('Gagal menghapus: '+error.message);else{message('Lagu dihapus.');showTracks();}});
-    row.append(info,del);$('tracks').append(row);
-  });
+ const {data,error}=await supabase.from('tracks').select('id,title,soundcloud_url,created_at,sort_order').not('soundcloud_url','is',null).order('sort_order',{ascending:true,nullsFirst:false}).order('created_at',{ascending:true});
+ if(error){message('Gagal memuat lagu: '+error.message);return;}
+ tracks=data||[];setDirty(false);renderTracks();
 }
+$('saveOrder').addEventListener('click',async()=>{
+ const btn=$('saveOrder');btn.disabled=true;btn.textContent='Menyimpan...';
+ for(let i=0;i<tracks.length;i++){
+  const {error}=await supabase.from('tracks').update({sort_order:i+1}).eq('id',tracks[i].id);
+  if(error){message('Gagal menyimpan urutan: '+error.message+' — pastikan SQL pengurutan sudah dijalankan.');btn.textContent='Simpan Urutan';btn.disabled=false;return;}
+ }
+ tracks=tracks.map((t,i)=>({...t,sort_order:i+1}));setDirty(false);btn.textContent='Simpan Urutan';message('Urutan playlist berhasil disimpan! Player akan mengikuti urutan ini.');
+});
 $('login').addEventListener('click',async()=>{
-  const username=$('username').value.trim(),password=$('password').value;
-  if(!username||!password){message('Isi username dan password.');return;}
-  const email=username.toLowerCase()==='admin'?'admin@night.radio':username;
-  const {error}=await supabase.auth.signInWithPassword({email,password});
-  if(error){message('Login gagal: '+error.message);return;}
-  $('loginBox').classList.add('hidden');$('adminBox').classList.remove('hidden');message('Login berhasil.');showTracks();
+ const username=$('username').value.trim(),password=$('password').value;
+ if(!username||!password){message('Isi username dan password.');return;}
+ const email=username.toLowerCase()==='admin'?'admin@night.radio':username;
+ const {error}=await supabase.auth.signInWithPassword({email,password});
+ if(error){message('Login gagal: '+error.message);return;}
+ $('loginBox').classList.add('hidden');$('adminBox').classList.remove('hidden');message('Login berhasil.');showTracks();
 });
 $('add').addEventListener('click',async()=>{
-  const title=$('title').value.trim(),url=$('url').value.trim();
-  if(!title||!url){message('Isi judul dan link SoundCloud.');return;}
-  if(!validSoundCloud(url)){message('Link tidak valid. Gunakan link lagu soundcloud.com/artist/nama-lagu.');return;}
-  const {error}=await supabase.from('tracks').insert({title,soundcloud_url:url,file_path:null});
-  if(error){message('Gagal menyimpan: '+error.message);return;}
-  $('title').value='';$('url').value='';message('Lagu berhasil ditambahkan!');showTracks();
+ const title=$('title').value.trim(),url=$('url').value.trim();
+ if(!title||!url){message('Isi judul dan link SoundCloud.');return;}
+ if(!validSoundCloud(url)){message('Link tidak valid. Gunakan link lagu soundcloud.com/artist/nama-lagu.');return;}
+ const nextOrder=tracks.reduce((m,t)=>Math.max(m,Number(t.sort_order)||0),0)+1;
+ const {error}=await supabase.from('tracks').insert({title,soundcloud_url:url,file_path:null,sort_order:nextOrder});
+ if(error){message('Gagal menyimpan: '+error.message);return;}
+ $('title').value='';$('url').value='';message('Lagu berhasil ditambahkan!');showTracks();
 });
 $('logout').addEventListener('click',async()=>{await supabase.auth.signOut();$('adminBox').classList.add('hidden');$('loginBox').classList.remove('hidden');message('Sudah logout.');});
 const {data:{session}}=await supabase.auth.getSession();

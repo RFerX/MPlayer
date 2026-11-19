@@ -1,21 +1,109 @@
 <!DOCTYPE html>
-<html lang="id"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Music Player</title>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Music Player</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 10% 0,#28134a55,transparent 45%),#09090f;color:#f4f4f8;font-family:Inter,Arial,sans-serif}header{display:flex;justify-content:space-between;align-items:center;padding:22px 30px;border-bottom:1px solid #ffffff12}.logo{font-size:21px;font-weight:800;letter-spacing:2px}.logo span{color:#a855f7}.tag{font-size:11px;letter-spacing:1px;color:#9292a6}.wrap{max-width:1200px;margin:auto;padding:30px 18px}.layout{display:grid;grid-template-columns:minmax(0,1fr) 370px;gap:22px}.panel{background:#13131c;border:1px solid #ffffff10;border-radius:22px;padding:25px}.label{font-size:11px;letter-spacing:2px;font-weight:700;color:#a855f7;margin-bottom:20px}.player{min-height:450px;display:flex;flex-direction:column}.title{font-size:clamp(22px,3vw,32px);font-weight:800;line-height:1.4;overflow-wrap:anywhere}.badge{margin-top:16px;background:#a855f720;border:1px solid #a855f744;color:#d8b4fe;padding:8px 12px;border-radius:10px;font-size:13px;font-weight:700;width:max-content}.progress-area{margin-top:auto;padding-top:35px}.times{display:flex;justify-content:space-between;color:#9292a6;font-size:12px;margin-bottom:10px}.bar{height:7px;border-radius:10px;background:#30303d;overflow:hidden;cursor:pointer}.fill{height:100%;width:0;background:linear-gradient(90deg,#7c3aed,#c084fc)}.controls{display:flex;justify-content:center;align-items:center;gap:25px;margin-top:28px}.control{border:0;background:none;color:#ddd;cursor:pointer;font-size:22px}.control:hover{color:white}.play{width:58px;height:58px;border-radius:50%;background:#7c3aed;color:white;font-size:22px}.volume{display:flex;justify-content:center;align-items:center;gap:10px;margin-top:22px;color:#aaa}.volume input{accent-color:#a855f7;width:120px}.listpanel{min-height:500px}.listhead{display:flex;justify-content:space-between;align-items:center}.listhead .label{margin:0}.count{font-size:12px;color:#9292a6}.playlist{max-height:550px;overflow:auto;margin-top:18px}.playlist::-webkit-scrollbar{width:5px}.playlist::-webkit-scrollbar-thumb{background:#363644;border-radius:8px}.song{display:flex;align-items:center;gap:12px;padding:13px 11px;border:1px solid transparent;border-radius:12px;margin-bottom:6px;cursor:pointer}.song:hover{background:#1b1b27}.song.active{background:#7c3aed22;border-color:#a855f744}.num{width:28px;color:#9292a6;font-size:13px}.song.active .num{color:#c4b5fd}.songname{flex:1;overflow-wrap:anywhere;font-size:13px;font-weight:600;line-height:1.5}.song.active .songname{color:#d8b4fe}.songmark{color:#a855f7}.status{text-align:center;color:#9292a6;font-size:12px;margin-top:20px;min-height:18px}.footer{text-align:center;color:#656579;font-size:10px;letter-spacing:1px;margin-top:22px}@media(max-width:850px){.layout{grid-template-columns:1fr}.playlist{max-height:400px}}@media(max-width:480px){header{padding:18px}.wrap{padding:18px 12px}.panel{padding:20px}}
-</style></head><body>
-<header><div class="logo">MUSIC <span>PLAYER</span></div><div class="tag">MUSIC PLAYER</div></header><main class="wrap"><div class="layout">
-<section class="panel player"><div class="label">NOW PLAYING</div><div id="title" class="title">Memuat playlist...</div><div id="number" class="badge">00 / 00</div><div class="progress-area"><div class="times"><span id="elapsed">00:00</span><span id="total">00:00</span></div><div id="bar" class="bar"><div id="fill" class="fill"></div></div><div class="controls"><button id="prev" class="control" title="Previous">|◀</button><button id="toggle" class="control play" title="Play/Pause">▶</button><button id="next" class="control" title="Next">▶|</button></div><div class="volume">♫ <input id="volume" type="range" min="0" max="1" step="0.01" value="0.8"></div></div></section>
-<section class="panel listpanel"><div class="listhead"><div class="label">PLAYLIST</div><div id="count" class="count">0 SONGS</div></div><div id="playlist" class="playlist"><div class="status">Memuat...</div></div><div class="footer">MUSIC PLAYER • CONTINUOUS MUSIC</div></section></div><div id="status" class="status">Menghubungkan...</div></main><audio id="audio" preload="auto"></audio>
+:root{color-scheme:dark;--bg:#090711;--panel:#151022;--line:#302044;--purple:#a855f7;--pink:#ec4899;--muted:#a99bbd}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at 15% 5%,#291044 0,transparent 35%),var(--bg);color:#fff;font:15px Arial,sans-serif;padding:28px}
+.wrap{max-width:1100px;margin:auto}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}.brand{font-size:25px;font-weight:800;letter-spacing:1px}.brand span{color:var(--purple)}.admin{color:#d9b8ff;text-decoration:none;border:1px solid var(--line);padding:10px 15px;border-radius:12px}
+.layout{display:grid;grid-template-columns:1.2fr .8fr;gap:20px}.panel{background:linear-gradient(145deg,#191329,#100d19);border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:0 12px 45px #0005}
+.now{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:2px}.song{font-size:28px;font-weight:800;margin:10px 0 6px;overflow-wrap:anywhere}.sub{color:var(--muted);margin-bottom:20px}
+.art{height:230px;border-radius:17px;background:linear-gradient(135deg,#42146b,#1d1231 55%,#751a65);display:grid;place-items:center;font-size:76px;margin:18px 0}
+#soundcloud{width:100%;height:166px;border:0;border-radius:12px;background:#0e0b15}
+.controls{display:flex;justify-content:center;align-items:center;gap:14px;margin-top:18px}.controls button{border:0;border-radius:50%;width:48px;height:48px;background:#2a1d3d;color:white;font-size:19px;cursor:pointer}.controls .play{width:60px;height:60px;background:linear-gradient(135deg,var(--purple),var(--pink));font-size:23px}
+.status{color:var(--muted);text-align:center;margin-top:15px;min-height:18px;font-size:13px}
+.head{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}.head h2{margin:0;font-size:18px}.count{color:var(--muted);font-size:12px}
+#playlist{display:flex;flex-direction:column;gap:8px;max-height:530px;overflow:auto}.track{display:flex;align-items:center;gap:12px;text-align:left;background:#100d19;border:1px solid transparent;color:white;border-radius:12px;padding:13px;cursor:pointer}.track.active{border-color:var(--purple);background:#251538}.num{color:#bda5d7;width:22px}.trackname{font-weight:600;overflow-wrap:anywhere}.empty{color:var(--muted);padding:25px 5px;text-align:center}
+@media(max-width:760px){body{padding:16px}.layout{grid-template-columns:1fr}.song{font-size:23px}.art{height:160px}}
+</style>
+<script src="https://w.soundcloud.com/player/api.js"></script>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><div class="brand">♫ MUSIC <span>PLAYER</span></div><a class="admin" href="admin.html">Admin</a></div>
+  <div class="layout">
+    <section class="panel">
+      <div class="now">NOW PLAYING</div>
+      <div class="song" id="songTitle">Memuat playlist...</div>
+      <div class="sub" id="songNumber">Music Player</div>
+      <div class="art">♫</div>
+      <iframe id="soundcloud" allow="autoplay" scrolling="no" frameborder="0"></iframe>
+      <div class="controls">
+        <button id="prev" title="Sebelumnya">⏮</button>
+        <button class="play" id="play" title="Putar">▶</button>
+        <button id="next" title="Berikutnya">⏭</button>
+      </div>
+      <div class="status" id="status">Menghubungkan ke playlist...</div>
+    </section>
+    <section class="panel">
+      <div class="head"><h2>Playlist</h2><span class="count" id="count">0 lagu</span></div>
+      <div id="playlist"><div class="empty">Mengambil daftar lagu...</div></div>
+    </section>
+  </div>
+</div>
 <script type="module">
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2';
 import {SUPABASE_URL,SUPABASE_KEY} from './config.js';
 const supabase=createClient(SUPABASE_URL,SUPABASE_KEY);
-const $=id=>document.getElementById(id);const audio=$('audio');let tracks=[],index=0;
-const fmt=s=>{if(!Number.isFinite(s))return'00:00';return`${String(Math.floor(s/60)).padStart(2,'0')}:${String(Math.floor(s%60)).padStart(2,'0')}`};
-function urlFor(t){return supabase.storage.from('music').getPublicUrl(t.file_path).data.publicUrl}
-function render(){ $('playlist').replaceChildren();tracks.forEach((t,i)=>{const row=document.createElement('div');row.className='song'+(i===index?' active':'');const n=document.createElement('span');n.className='num';n.textContent=String(i+1).padStart(2,'0');const name=document.createElement('span');name.className='songname';name.textContent=t.title;const mark=document.createElement('span');mark.className='songmark';mark.textContent=i===index&&!audio.paused?'♫':'';row.append(n,name,mark);row.onclick=()=>playAt(i);$('playlist').append(row)});$('count').textContent=`${tracks.length} SONGS`}
-function load(i){index=i;audio.src=urlFor(tracks[i]);audio.load();$('title').textContent=tracks[i].title;$('number').textContent=`${String(i+1).padStart(2,'0')} / ${String(tracks.length).padStart(2,'0')}`;render()}
-async function playAt(i){if(!tracks.length)return;i=(i+tracks.length)%tracks.length;load(i);try{await audio.play();$('status').textContent='Musik sedang diputar'}catch(e){$('status').textContent='Autoplay diblokir browser—tekan tombol Play.'}}
-async function init(){try{const{data,error}=await supabase.from('tracks').select('id,title,file_path,created_at').order('created_at',{ascending:true});if(error)throw error;tracks=data||[];render();if(!tracks.length){$('title').textContent='Playlist kosong';$('number').textContent='00 / 00';$('status').textContent='Upload lagu lewat halaman admin.';return}load(0);try{await audio.play();$('status').textContent='Musik sedang diputar'}catch{$('status').textContent='Autoplay diblokir browser—tekan tombol Play.'}}catch(e){console.error(e);$('title').textContent='Playlist gagal dimuat';$('status').textContent='Periksa URL/key Supabase dan konfigurasi database.'}}
-$('toggle').onclick=async()=>{if(!tracks.length)return;if(audio.paused){if(!audio.src)load(index);try{await audio.play()}catch{$('status').textContent='Gagal memutar audio'}}else audio.pause()};$('next').onclick=()=>playAt(index+1);$('prev').onclick=()=>{if(audio.currentTime>3){audio.currentTime=0;audio.play()}else playAt(index-1)};audio.addEventListener('ended',()=>playAt(index+1));audio.addEventListener('play',()=>{$('toggle').textContent='Ⅱ';render()});audio.addEventListener('pause',()=>{$('toggle').textContent='▶';render()});audio.addEventListener('timeupdate',()=>{if(!audio.duration)return;$('fill').style.width=(audio.currentTime/audio.duration*100)+'%';$('elapsed').textContent=fmt(audio.currentTime);$('total').textContent=fmt(audio.duration)});audio.addEventListener('loadedmetadata',()=> $('total').textContent=fmt(audio.duration));$('bar').onclick=e=>{if(!audio.duration)return;const r=$('bar').getBoundingClientRect();audio.currentTime=((e.clientX-r.left)/r.width)*audio.duration};$('volume').oninput=e=>audio.volume=Number(e.target.value);audio.volume=.8;init();
-</script></body></html>
+const $=id=>document.getElementById(id);
+let tracks=[],index=0,widget=null,ready=false,playing=false,manualStart=false;
+const setStatus=t=>$('status').textContent=t;
+function render(){
+  $('count').textContent=tracks.length+' lagu';
+  $('playlist').innerHTML='';
+  if(!tracks.length){$('playlist').innerHTML='<div class="empty">Belum ada lagu. Tambahkan link SoundCloud dari Admin.</div>';return;}
+  tracks.forEach((t,i)=>{
+    const b=document.createElement('button');b.className='track'+(i===index?' active':'');
+    const n=document.createElement('span');n.className='num';n.textContent=String(i+1).padStart(2,'0');
+    const name=document.createElement('span');name.className='trackname';name.textContent=t.title||'Tanpa judul';
+    b.append(n,name);b.addEventListener('click',()=>playAt(i,true));$('playlist').append(b);
+  });
+}
+function widgetUrl(url){
+  return 'https://w.soundcloud.com/player/?url='+encodeURIComponent(url)+'&auto_play=true&hide_related=true&show_comments=false&show_user=true&show_reposts=false&visual=false&buying=false&sharing=false&download=false';
+}
+function playAt(i,byUser=false){
+  if(!tracks.length)return;
+  if(i<0)i=tracks.length-1;if(i>=tracks.length)i=0;
+  index=i;manualStart=manualStart||byUser;ready=false;playing=false;
+  const t=tracks[index];
+  $('songTitle').textContent=t.title||'Tanpa judul';
+  $('songNumber').textContent='Lagu '+(index+1)+' dari '+tracks.length;
+  $('play').textContent='▶';render();
+  const frame=$('soundcloud');
+  frame.src=widgetUrl(t.soundcloud_url);
+  setStatus('Memuat lagu dari SoundCloud...');
+  frame.onload=()=>{
+    if(!window.SC||!window.SC.Widget)return;
+    widget=window.SC.Widget(frame);
+    widget.bind(window.SC.Widget.Events.READY,()=>{
+      ready=true;
+      widget.play();
+      setStatus('Mencoba memutar lagu...');
+    });
+    widget.bind(window.SC.Widget.Events.PLAY,()=>{playing=true;$('play').textContent='Ⅱ';setStatus('Sedang diputar');});
+    widget.bind(window.SC.Widget.Events.PAUSE,()=>{playing=false;$('play').textContent='▶';setStatus('Dijeda');});
+    widget.bind(window.SC.Widget.Events.FINISH,()=>playAt(index+1,true));
+    widget.bind(window.SC.Widget.Events.ERROR,()=>setStatus('Lagu tidak dapat diputar. Coba link SoundCloud lain.'));
+  };
+}
+$('play').addEventListener('click',()=>{
+  if(!widget||!ready){if(tracks.length)playAt(index,true);return;}
+  manualStart=true;
+  if(playing)widget.pause();else widget.play();
+});
+$('next').addEventListener('click',()=>playAt(index+1,true));
+$('prev').addEventListener('click',()=>playAt(index-1,true));
+async function init(){
+  const {data,error}=await supabase.from('tracks').select('id,title,soundcloud_url,created_at').not('soundcloud_url','is',null).order('created_at',{ascending:true});
+  if(error){setStatus('Gagal mengambil playlist: '+error.message);$('playlist').innerHTML='<div class="empty">Tidak bisa memuat playlist.</div>';return;}
+  tracks=data||[];render();
+  if(!tracks.length){$('songTitle').textContent='Belum ada lagu';setStatus('Tambahkan link SoundCloud lewat Admin.');return;}
+  playAt(0,false);
+}
+init();
+</script>
+</body>
+</html>
